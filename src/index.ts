@@ -132,19 +132,17 @@ const plugin: JupyterFrontEndPlugin<void> = {
           console.log(marksList);
           if (marksList.includes('?')) {
             alert('At least one mark is missing');
-          } else {
-            // check if final cell is SUMMARY = true
-            const cell = cells?.get(cells.length-1);
-            const notebook = currentWidget.content;
-            if (cells) {
-              notebook.activeCellIndex = cells.length - 1;
-              notebook.activate();  
-              const metadata = cell?.metadata ? { ...cell.metadata } : {};
-              if (metadata['SUMMARY'] === true) {
-                // if so, delete it
-                alert('deleting!');
-                await app.commands.execute('notebook:delete-cell')
-              }
+          }
+          // check if final cell is SUMMARY = true
+          const cell = cells?.get(cells.length-1);
+          if (cells) {
+            notebook.activeCellIndex = cells.length - 1;
+            notebook.activate();  
+            const metadata = cell?.metadata ? { ...cell.metadata } : {};
+            if (metadata['SUMMARY'] === true) {
+              // if so, delete it
+              alert('deleting!');
+              await app.commands.execute('notebook:delete-cell')
             }
             // insert final summary cell
             // Set the active cell
@@ -159,14 +157,22 @@ const plugin: JupyterFrontEndPlugin<void> = {
               // print table of marks
               const newCell = notebook.activeCell;
               let table = "<b>Marks:</b><br>"
-              table += "<table>";
-              table += "<tr><td><b>Question</b></td><td><b>Marks</b></td><td><b>Out Of</b></td></tr>";
+              table += "<table>\n";
+              table += "<tr><td><b>Question</b></td><td><b>Marks</b></td><td><b>Out Of</b></td></tr>\n";
               for (let i = 0; i < questionPartsList.length; i++) {
-                marksTotal += Number(marksList[i]);
-                outOfTotal += outOfList[i];
-                table += "<tr><td>"+questionPartsList[i]+"</td><td>"+marksList[i]+"</td><td>"+outOfList[i]+"</td></tr>";
+                console.log('Row:'+i);
+                if (! marksList.includes('?')) {
+                  console.log(' Mark missing');
+                  marksTotal += Number(marksList[i]);
+                  outOfTotal += outOfList[i];
+                } else {
+                  console.log(' Mark found');
+                }
+                table += "<tr><td>"+questionPartsList[i]+"</td><td>"+marksList[i]+"</td><td>"+outOfList[i]+"</td></tr>\n";
               }
-              table += "<tr><td><b>Total</b></td><td><b>"+marksTotal+"</b></td><td><b>"+outOfTotal+"</b></td></tr>";
+              if (! marksList.includes('?')) {
+                table += "<tr><td><b>Total</b></td><td><b>"+marksTotal+"</b></td><td><b>"+outOfTotal+"</b></td></tr>\n";
+              }
               table += "</table>";
               newCell?.model.sharedModel.setSource(table);
               newCell?.model.setMetadata('SUMMARY', true);

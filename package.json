@@ -1,6 +1,6 @@
 {
     "name": "m269_marking_plugin",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Marking plugin for the M269 Open University module",
     "keywords": [
         "jupyter",
@@ -13,7 +13,7 @@
     },
     "license": "BSD-3-Clause",
     "author": {
-        "name": "m269_marking_plugin",
+        "name": "Oli Howson",
         "email": "oli.howson@open.ac.uk"
     },
     "files": [
@@ -55,7 +55,9 @@
         "watch:labextension": "jupyter labextension watch ."
     },
     "dependencies": {
-        "@jupyterlab/application": "^4.0.0"
+        "@jupyterlab/application": "^4.0.0",
+        "@jupyterlab/notebook": "^4.2.5",
+        "@jupyterlab/settingregistry": "^4.2.5"
     },
     "devDependencies": {
         "@jupyterlab/builder": "^4.0.0",
